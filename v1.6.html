@@ -1,0 +1,495 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>信号交叉口配时参数计算</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
+	<script src="https://cache.amap.com/lbs/static/jquery-1.9.1.js"></script>
+	<script src="https://cache.amap.com/lbs/static/jquery.range.js"></script>
+	       <script type="text/javascript" src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js"></script>
+    <style type="text/css">
+       html,body,#container{
+           height:100%;
+       }
+       .btn{
+           margin-left: 0.5rem;
+           width:4rem;
+       }
+    </style>
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/jquery.range.css"/>
+
+</head>
+
+<body>
+<div id="container" style="height: 100%">
+
+<div class="input-card " style='right:5%;width:90%;top:5%;bottom:5%'>
+<h2 style='color:grey'>信号交叉口配时参数计算v1.6_by小旭学长</h2><input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
+	
+    <div class="input-item" >
+     <div class="input-item-prepend"><span class="input-item-text" >相位数</span></div>
+  	 <select name="num" id="num">
+	 <option value ="1">请选择</option>
+     <option value ="2">2</option>
+	 <option value ="3">3</option>
+	 <option value ="4">4</option>
+	 <option value ="5">5</option>
+	 <option value ="6">6</option>
+	 <option value ="7">7(不推荐)</option>
+	 <option value ="8">8(不推荐)</option>
+    </select>
+	 <div class="input-item-prepend"><span class="input-item-text" >前损失(s)</span></div><input type="text" id = "qs" value= '1'>
+ <div class="input-item-prepend"><span class="input-item-text" >后损失(s)</span></div><input type="text" id = "hs" value= '1'>
+ <div class="input-item-prepend"><span class="input-item-text" >黄灯时间(s)</span></div><input type="text" id = "hd" value= '3'>
+ <div class="input-item-prepend"><span class="input-item-text" >全红时间(s)</span></div><input type="text"id = "qh" value= '1'>
+    </div>
+	
+
+ <div class="input-item" style="display:" id="para">
+	<input type="button" class="btn" value="计算" id='js' onClick="javascript:calculate()" style='display:none;width:8rem;'/>
+	<input type="button" class="btn" value="计算" id='js2' onClick="javascript:calculate_customized()" style='display:none;width:8rem;'/>
+    <input type="button" class="btn" value="自定义相位时间" id='zdy' onClick="javascript:zdy()" style='display:none;width:8rem;'/>
+ 	<label class="input-item-text" style='width:6rem;' id = 'test'>周期公式</label>
+	 <select name="coord" id="coord">
+	 <option value ="best">最佳周期：C=(1.5L+5)/(1-Y)</option>
+     <option value ="small">最小周期：C=L/(1-Y)</option>
+	 <option value ="costomized">自定义周期</option>
+    </select>
+	<div class="input-item-prepend" id ='costomizedCd' style='display:none'><span class="input-item-text" >自定义周期</span></div><input style='display:none;width:1rem;' type="text" id = "costomizedC" value= '200'>
+
+ </div>
+
+
+ <div class="input-item" style="display:none" id="Q">
+
+</div>
+
+
+
+</div>
+</div>
+
+<div id="container2" style = 'display:none'>
+<div class="input-card " id='echartsfig' style='right:6%;width:70%;top:35%;bottom:6%'>
+<div id="container3" style="height: 100%"></div>
+</div>
+</div>
+
+<div id="container4" style = 'display:none'>
+<div class="input-card " id='jiaochengcard' style='right:6%;width:88%;top:25%;bottom:6%'>
+<p style='color:grey'>信号配时各参数关系：</p>
+<p style='color:black'>有效绿灯时间（Effective Green）=显示绿灯时间（Actual Green）+黄灯时间（图中Y）-前损失（Start-up Lost Time）-后损失（图中黄灯后半段）</p>
+<p style='color:black'>一个周期总时长=显示绿灯时间（Actual Green）+黄灯时间（图中Y）+全红时间（图中R）</p>
+<p style='color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=前损失（Start-up Lost Time）+后损失（图中黄灯后半段） + 有效绿灯时间（Effective Green）+全红时间（图中R）</p>
+
+
+<img id="imgPicture" src="https://bkimg.cdn.bcebos.com/pic/adaf2edda3cc7cd91dc9e3033e01213fb90e9100@wm_1,g_7,k_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5"  style="height: 220px; width:550px;" url="https://bkimg.cdn.bcebos.com/pic/adaf2edda3cc7cd91dc9e3033e01213fb90e9100@wm_1,g_7,k_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5">
+<p style='color:black'>Utilized Clearance-后补偿时间</p>
+</div>
+</div>
+<script>
+function showfig(){
+var figbtn = document.getElementById("fig")
+var container2 = document.getElementById("container2")
+if(container2.style.display=='none'){
+container2.style.display=''
+figbtn.value = '关闭配时图'
+plotecharts()
+}else{container2.style.display='none'
+figbtn.value = '显示配时图'
+}
+}
+function showjiaocheng(){
+var figbtn = document.getElementById("jiaocheng")
+var container4 = document.getElementById("container4")
+if(container4.style.display=='none'){
+container4.style.display=''
+figbtn.value = '关闭教程'
+}else{container4.style.display='none'
+figbtn.value = '信号配时教程'
+}
+}
+
+$('#coord').change(function(){
+var costomizedCd = document.getElementById("costomizedCd")
+var costomizedC = document.getElementById("costomizedC")
+if($("#coord").val()=='costomized'){
+costomizedCd.style.display=''
+costomizedC.style.display=''
+}else{
+costomizedCd.style.display='none'
+costomizedC.style.display='none'
+}
+}
+)
+
+
+$('#num').change( function (){
+num = $("#num").val();
+$('#container2').hide()
+iszdy = 0
+if (num>1)
+{
+$('#test').show()
+$('#coord').show()
+$('#js').show()
+$('#js2').hide()
+$('#costomizedCd').hide()
+$('#costomizedC').hide()
+var q = document.getElementById("Q")
+q.style.display = ""
+var js = document.getElementById("js")
+js.style.display = ""
+var zdy = document.getElementById("zdy")
+zdy.style.display = ""
+$("#Q").empty()
+$("#Q").append('<div class="input-item" id = "sjq"><h4 style="color:grey">实际流量(veh/h)</h4></div>');
+$("#Q").append('<div class="input-item" id = "bhq"><h4 style="color:grey">饱和流量(veh/h)</h4></div>');
+ for(var i=0;i<num;i++){
+ k = i+1
+$("#sjq").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="400" id = "l'+k+'sjq">')
+$("#bhq").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="1400" id = "l'+k+'bhq">')
+}
+$("#Q").append('<div class="input-item" id = "res"></div>');
+}
+
+}
+)
+
+function zdy(){
+iszdy = 1
+$('#container2').hide()
+$('#costomizedCd').hide()
+$('#costomizedC').hide()
+$('#js').hide()
+$('#test').hide()
+$('#coord').hide()
+$('#js2').show()
+$("#Q").empty()
+$("#Q").append('<div class="input-item" id = "yxld"><h4 style="color:grey">显示绿灯时间g&nbsp;&nbsp;</h4></div>');
+$("#Q").append('<div class="input-item" id = "hdsj"><h4 style="color:grey">黄&nbsp;&nbsp;灯&nbsp;&nbsp;时&nbsp;&nbsp;间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#Q").append('<div class="input-item" id = "qhsj"><h4 style="color:grey">全&nbsp;&nbsp;红&nbsp;&nbsp;时&nbsp;&nbsp;间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#Q").append('<div class="input-item" id = "res"></div>');
+$("#res").show()
+$("#res").empty()
+for(var i=0;i<num;i++){
+k = i+1
+
+$("#yxld").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="" id = "l'+k+'g">')
+$("#hdsj").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+parseFloat($('#hd').val())+'" id = "l'+k+'hd">')
+$("#qhsj").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+parseFloat($('#qh').val())+'" id = "l'+k+'qh">')
+}
+
+
+}
+
+function calculate_customized(){
+
+ $("#res").empty()
+ qs = parseFloat($('#qs').val())
+hs = parseFloat($('#hs').val())
+qh = parseFloat($('#qh').val())
+hd = parseFloat($('#hd').val())
+
+gs = []
+hds = []
+qhs = []
+isnan = 0
+for(var i=0;i<num;i++){
+k = i+1
+gi = parseFloat($('#l'+k+'g').val())
+hdi = parseFloat($('#l'+k+'hd').val())
+qhi = parseFloat($('#l'+k+'qh').val())
+ gs.push(gi)
+ hds.push(hdi)
+ qhs.push(qhi)
+ if(isNaN(gi)|isNaN(hdi)|isNaN(qhi)){
+ isnan = 1
+ }
+ }
+
+ if(isnan == 1){
+  $("#res").append('<div class="input-item" id = "erro"></div>');
+ $("#erro").append('<h4 style="color:grey">请输入各相位时间参数</h4>');
+ }else{
+ //自定义参数的计算
+$("#res").append('<div class="input-item" id = "xsld"><h4 style="color:grey">有效绿灯时间ge</h4></div>');
+L = 0
+ges = []
+for(var i=0;i<num;i++){
+k = i+1
+ ge = gs[i]-qs-hs+hds[i]
+$("#xsld").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+ge.toFixed(3)+'" id = "l'+k+'ge">')
+ L += qs+hs+qhs[i]
+ ges.push(ge)
+}
+
+ 
+$("#res").append('<div class="input-item" id = "params_1"><h4 style="color:grey">周&nbsp;&nbsp;期&nbsp;&nbsp;参&nbsp;&nbsp;数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">总损失L</span></div><input type="text" value="'+L+'" id = "zss">')
+
+C = 0
+for(var i=0;i<num;i++){
+
+ C += gs[i]+hds[i]+qhs[i]}
+
+$("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">周期时长C</span></div><input type="text" value="'+C.toFixed(3)+'" id = "zqsc">')
+
+ $("#res").append('<div class="input-item" id = "lxb"><h4 style="color:grey">绿&nbsp;&nbsp;信&nbsp;&nbsp;比&nbsp;λ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+for(var i=0;i<num;i++){
+
+ lxb = ges[i]/C
+$("#lxb").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+lxb.toFixed(3)+'" id = "l'+k+'ge">')
+}
+ 
+ 
+ 
+ $("#res").append('<input type="button" class="btn" value="显示配时图" id="fig" onClick="javascript:showfig()" style="width:8rem;"/>')
+if(container2.style.display=='none'){}
+else{plotecharts()
+var figbtn = document.getElementById("fig")
+figbtn.value = '关闭配时图'
+}
+ }
+}
+
+
+
+function calculate(){
+$("#res").show()
+$("#res").empty()
+$("#res").append('<div class="input-item" id = "llb"><h4 style="color:grey">流&nbsp;&nbsp;量&nbsp;&nbsp;比&nbsp;&nbsp;y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+
+Y=0
+for(var i=0;i<num;i++){
+ k = i+1
+ sjq = parseFloat($('#l'+k+'sjq').val())
+ bhq = parseFloat($('#l'+k+'bhq').val())
+ y = sjq/bhq
+ Y += y
+$("#llb").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+y.toFixed(3)+'" id = "l'+k+'llb">')
+}
+$("#res").append('<div class="input-item" id = "params_1"><h4 style="color:grey">周&nbsp;&nbsp;期&nbsp;&nbsp;参&nbsp;&nbsp;数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">总流量比Y</span></div><input type="text" value="'+Y.toFixed(3)+'" id = "zllb">')
+if(Y <1){
+
+
+
+qs = parseFloat($('#qs').val())
+hs = parseFloat($('#hs').val())
+qh = parseFloat($('#qh').val())
+hd = parseFloat($('#hd').val())
+L = (qs+hs+qh)*num
+$("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">总损失L</span></div><input type="text" value="'+L+'" id = "zss">')
+
+if($("#coord").val()=='best'){
+C = (1.5*L+5)/(1-Y)}else
+{
+if($("#coord").val()=='small'){
+C = L/(1-Y)}else{
+//自定义C
+C = parseFloat($('#costomizedC').val())
+}
+}
+$("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">周期时长C</span></div><input type="text" value="'+C.toFixed(3)+'" id = "zqsc">')
+
+$("#res").append('<div class="input-item" id = "yxld"><h4 style="color:grey">有效绿灯时间ge</h4></div>');
+for(var i=0;i<num;i++){
+k = i+1
+ sjq = parseFloat($('#l'+k+'sjq').val())
+ bhq = parseFloat($('#l'+k+'bhq').val())
+ y = sjq/bhq
+ ge = (y/Y)*(C-L)
+$("#yxld").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+ge.toFixed(3)+'" id = "l'+k+'ge">')
+}
+
+$("#res").append('<div class="input-item" id = "xsld"><h4 style="color:grey">显示绿灯时间g&nbsp;&nbsp;</h4></div>');
+for(var i=0;i<num;i++){
+k = i+1
+ sjq = parseFloat($('#l'+k+'sjq').val())
+ bhq = parseFloat($('#l'+k+'bhq').val())
+ y = sjq/bhq
+ g = (y/Y)*(C-L)+qs+hs-hd
+$("#xsld").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+g.toFixed(3)+'" id = "l'+k+'g">')
+}
+
+$("#res").append('<div class="input-item" id = "lxb"><h4 style="color:grey">绿&nbsp;&nbsp;信&nbsp;&nbsp;比&nbsp;λ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+for(var i=0;i<num;i++){
+k = i+1
+ sjq = parseFloat($('#l'+k+'sjq').val())
+ bhq = parseFloat($('#l'+k+'bhq').val())
+ y = sjq/bhq
+ lxb = ((y/Y)*(C-L))/C
+$("#lxb").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+lxb.toFixed(3)+'" id = "l'+k+'ge">')
+}
+
+
+$("#res").append('<input type="button" class="btn" value="显示配时图" id="fig" onClick="javascript:showfig()" style="width:8rem;"/>')
+
+var container2 = document.getElementById("container2")
+if(container2.style.display=='none'){}
+else{plotecharts()
+var figbtn = document.getElementById("fig")
+figbtn.value = '关闭配时图'
+}
+}else{
+$("#res").append('<div class="input-item" id = "zllb"><h4 style="color:grey">错误，总流量比Y大于1</h4></div>');
+}
+
+
+}
+
+
+
+function plotecharts(){
+var dom = document.getElementById("container3");
+var myChart = echarts.init(dom);
+var app = {};
+console.log(iszdy)
+
+xw = []
+gs = []
+num = $("#num").val();
+h = parseFloat($('#hd').val());
+qh = parseFloat($('#qh').val());
+C = parseFloat($('#zqsc').val());
+
+hs = []
+rs1 = []
+rs2 = []
+r = 0
+
+if (iszdy==0){
+for(var i=0;i<num;i++){
+
+rs1.push(r)
+g = parseFloat($('#l'+(i+1)+'g').val());
+gs.push(g)
+xw.push('相位'+(i+1))
+hs.push(h)
+r += g+h
+rs2.push(C-r)
+r += qh
+
+}
+}else{
+
+for(var i=0;i<num;i++){
+
+rs1.push(r)
+g = parseFloat($('#l'+(i+1)+'g').val());
+gs.push(g)
+xw.push('相位'+(i+1))
+hs.push(hds[i])
+r += g+hds[i]
+rs2.push(C-r)
+r += qhs[i]
+
+}
+}
+var option = {
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data:['红灯','绿灯','黄灯']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+		top:'13%',
+        containLabel: true
+    },
+    yAxis : [
+        {
+            type : 'category',
+            data : xw,
+			inverse:true
+        }
+    ],
+    xAxis : [
+        {
+            type : 'value',
+			max:C
+        }
+    ],
+    series : [
+        {
+            name:'红灯',
+            type:'bar',
+            barWidth : 20,
+            stack: '相位',
+			label:{show:true,
+formatter: function (value) {
+hdd = parseFloat(value.data).toFixed(0)
+if (hdd < 1){return ''}else{
+return hdd} }},
+            data:rs1,           itemStyle: {
+                normal: {
+                    color: 'rgb(213,34,35)'
+                }
+            }
+        },
+        {
+            name:'绿灯',
+            type:'bar',
+            stack: '相位',
+            data:gs,
+			label:{show:true,
+formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
+			           itemStyle: {
+                normal: {
+                    color: 'rgb(169,209,142)'
+                }
+            }
+        },
+        {
+            name:'黄灯',
+            type:'bar',
+            stack: '相位',
+            data:hs,
+			label:{show:true,
+formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
+			           itemStyle: {
+                normal: {
+                    color: 'rgb(255,217,102)'
+                }
+            }
+        },
+        {
+            name:'红灯',
+            type:'bar',
+            stack: '相位',
+            data:rs2,
+label:{show:true,
+formatter: function (value) {return parseFloat(value.data).toFixed(0)}
+},
+            itemStyle: {
+                normal: {
+                    color: 'rgb(213,34,35)'
+                }
+            }
+        }
+    ]
+};
+
+
+var data ={}
+
+    myChart.setOption(option
+	
+)
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+}
+</script>
+</body>
+
+</html>
