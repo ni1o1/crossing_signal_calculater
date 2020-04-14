@@ -84,7 +84,7 @@
 <p style='color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=前损失（Start-up Lost Time）+后损失（图中黄灯后半段） + 有效绿灯时间（Effective Green）+全红时间（图中R）</p>
 
 
-<img id="imgPicture" src="peishi.jpeg"  style="height: 220px; width:550px;" url="peishi.jpeg">
+<img id="imgPicture" src="https://bkimg.cdn.bcebos.com/pic/adaf2edda3cc7cd91dc9e3033e01213fb90e9100@wm_1,g_7,k_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5"  style="height: 220px; width:550px;" url="https://bkimg.cdn.bcebos.com/pic/adaf2edda3cc7cd91dc9e3033e01213fb90e9100@wm_1,g_7,k_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5">
 <p style='color:black'>Utilized Clearance-后补偿时间</p>
 </div>
 </div>
@@ -148,7 +148,7 @@ $("#Q").append('<div class="input-item" id = "sjq"><h4 style="color:grey">实际
 $("#Q").append('<div class="input-item" id = "bhq"><h4 style="color:grey">饱和流量(veh/h)</h4></div>');
  for(var i=0;i<num;i++){
  k = i+1
-$("#sjq").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="400" id = "l'+k+'sjq">')
+$("#sjq").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+400*3/num+'" id = "l'+k+'sjq">')
 $("#bhq").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="1400" id = "l'+k+'bhq">')
 }
 $("#Q").append('<div class="input-item" id = "res"></div>');
@@ -441,7 +441,10 @@ return hdd} }},
             stack: '相位',
             data:gs,
 			label:{show:true,
-formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
+formatter: function (value) {
+hdd = parseFloat(value.data).toFixed(0)
+if (hdd < 1){return ''}else{
+return hdd} }},
 			           itemStyle: {
                 normal: {
                     color: 'rgb(169,209,142)'
@@ -454,7 +457,10 @@ formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
             stack: '相位',
             data:hs,
 			label:{show:true,
-formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
+formatter: function (value) {
+hdd = parseFloat(value.data).toFixed(0)
+if (hdd < 1){return ''}else{
+return hdd} }},
 			           itemStyle: {
                 normal: {
                     color: 'rgb(255,217,102)'
@@ -467,7 +473,10 @@ formatter: function (value) {return parseFloat(value.data).toFixed(0)}},
             stack: '相位',
             data:rs2,
 label:{show:true,
-formatter: function (value) {return parseFloat(value.data).toFixed(0)}
+formatter: function (value) {
+hdd = parseFloat(value.data).toFixed(0)
+if (hdd < 1){return ''}else{
+return hdd} }
 },
             itemStyle: {
                 normal: {
