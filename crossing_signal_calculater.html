@@ -25,7 +25,7 @@
 <div id="container" style="height: 100%">
 
 <div class="input-card " style='right:5%;width:90%;top:5%;bottom:5%'>
-<h2 style='color:grey'>信号交叉口配时参数计算v1.6_by小旭学长</h2><input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
+<h2 style='color:grey'>信号交叉口配时参数计算v1.7_by小旭学长</h2><input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
 	
     <div class="input-item" >
      <div class="input-item-prepend"><span class="input-item-text" >相位数</span></div>
@@ -415,7 +415,7 @@ var option = {
     xAxis : [
         {
             type : 'value',
-			max:C
+			max:(parseFloat(rs1[0].toFixed(0))+parseFloat(gs[0].toFixed(0))+parseFloat(hs[0].toFixed(0))+parseFloat(rs2[0].toFixed(0)))
         }
     ],
     series : [
