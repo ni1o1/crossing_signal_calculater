@@ -107,7 +107,7 @@
 	 <option value ="5">5</option>
 	 <option value ="6">6</option>
     </select>
-<div class="input-item-prepend"><span class="input-item-text" >车速(km/h)</span></div><input type="text"id = "speed_l" value= '20'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changespeeed(1)" style="display:;width:2rem;"/>
+<div class="input-item-prepend"><span class="input-item-text" >车速(km/h)</span></div><input type="text"id = "speed_l" value= '10'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changespeeed(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-1" id="jiank" onClick="javascript:changespeeed(-1)" style="display:;width:2rem;"/>
 <div class="input-item-prepend"><span class="input-item-text" >周期时长C</span></div><input type="text"id = "zqsc_l" value= '100'><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changeC(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changeC(-1)" style="display:;width:2rem;"/>
@@ -374,7 +374,6 @@ function plotecharts(){
 var dom = document.getElementById("container3");
 var myChart = echarts.init(dom);
 var app = {};
-console.log(iszdy)
 
 xw = []
 gs = []
@@ -535,13 +534,13 @@ container5.style.display=''
 //
 $('#tcount').change( function (){
 tcount = $("#tcount").val();
-console.log(tcount)
+
 var q = document.getElementById("Q_liandong")
 q.style.display = ""
 $("#Q_liandong").empty()
 $("#Q_liandong").append('<div class="input-item" id = "yxld_l"><h4 style="color:grey">有效绿灯时间ge&nbsp;&nbsp;</h4></div>');
 $("#Q_liandong").append('<div class="input-item" id = "lsc_l"><h4 style="color:grey">绿&nbsp;&nbsp;时&nbsp;&nbsp;差&nbsp;&nbsp;t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
-$("#Q_liandong").append('<div class="input-item" id = "jj_l"><h4 style="color:grey">交叉口间距(m)D&nbsp;&nbsp;</h4></div>');
+$("#Q_liandong").append('<div class="input-item" id = "jj_l"><h4 style="color:grey">交叉口间距(m)&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
  for(var i=0;i<tcount;i++){
  k = i+1
 $("#yxld_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" value="30" id = "yxld_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changege('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changege('+(-k)+')" style="display:;width:2rem;"/>')
@@ -552,17 +551,25 @@ $("#lsc_l").append('<div class="input-item-prepend"><span class="input-item-text
  k1 = k+1
 $("#jj_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'到'+k1+'</span></div><input type="text" value="300" id = "dd_l'+k+'"><input type="button" class="btn" value="+10" id="jiak" onClick="javascript:changeD('+k+')" style="display:;width:3rem;"/><input type="button" class="btn" value="-10" id="jiank" onClick="javascript:changeD('+(-k)+')" style="display:;width:3rem;"/>')
 }
-
+$("#Q_liandong").append('<div class="input-item" id = "lvbk_l"><h4 style="color:grey">绿波带宽 (s)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#lvbk_l").append('<div class="input-item-prepend"><span class="input-item-text">正向带宽</span></div><input type="text" value="30" id = "zxlb">')
+$("#lvbk_l").append('<div class="input-item-prepend"><span class="input-item-text">反向带宽</span></div><input type="text" value="30" id = "fxlb">')
 $("#Q_liandong").append('<div id="container6" style="right:6%;height: 500px;width:100%;bottom:6%"></div>')
 plot_liandong()
 })
 
 function change(a){
+C = $("#zqsc_l").val();
+
 	var q = document.getElementById("lsc_l"+(Math.abs(a)))
-	if(a>0){
-	q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())+5)%C}else{
-		if(q.value>0){
-		q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())-5)%C}
+	if(a>0){if(q.value<C/2){
+	q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())+5)%C
+	}else{q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())+5-C)%C}
+	}else{
+		if(q.value>-C/2){
+		q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())-5)%C}else{
+		q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())-5+parseInt(C))
+		}
 	}
 	plot_liandong()
 }
@@ -578,8 +585,8 @@ function changege(a){
 	plot_liandong()
 }
 function changeC(a){
+
 	var q = document.getElementById("zqsc_l")
-	
 	if(a>0){
 	q.value =  (parseInt($("#zqsc_l").val())+5)}else{
 		if(q.value>0){
@@ -638,34 +645,110 @@ hong = []
 	   //绿时差
 	   lsc = parseFloat($("#lsc_l"+i).val())%C;
 
-	    for(var j=-1;j<zqgs;j++){
+	    for(var j=-1;j<zqgs+1;j++){
 			hong.push({coords:[[pos[i-1],j*C+lsc+ge],[pos[i-1],(j+1)*C+lsc]]})
 			lv.push({coords:[[pos[i-1],j*C+lsc],[pos[i-1],j*C+lsc+ge]]})
 		}
    }
 
-//计算绿波带宽 
+//计算绿波带宽辅助线
 var lvb_fuzhu = []
 	   ge = parseFloat($("#yxld_l1").val());
 	   //绿时差
 	   lsc = parseFloat($("#lsc_l1").val())%C;
 	   speed = $("#speed_l").val();
 	   t2 = (pos[tcount-1]+100)/(speed/3.6)
-	   for(var j=-1;j<zqgs;j++){
+	   for(var j=-zqgs;j<zqgs;j++){
 	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc],[pos[tcount-1]+100,j*C+lsc+t2]]})
 	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc+ge],[pos[tcount-1]+100,j*C+lsc+t2+ge]]})
 	   }
 	   lsc1 = parseFloat($("#lsc_l"+tcount).val())%C;
 	   ge1 = parseFloat($("#yxld_l"+tcount).val());
 	   t1 = (pos[tcount-1]+100)/(speed/3.6)
-	   	for(var j=-1;j<zqgs;j++){
+	   	for(var j=-zqgs;j<zqgs;j++){
 	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+lsc1+t1],[pos[tcount-1],j*C+lsc1]]})
 	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+lsc1+t1+ge1],[pos[tcount-1],j*C+lsc1+ge1]]})
 	   }
-console.log(lvb_fuzhu)
+
+
+//计算绿波带宽
+//绿波的绿时差
+var lsc_l = 0
+var lsc_l2 = 0
+ge = parseFloat($("#yxld_l"+1).val());
+for(var i=0;i<tcount;i++){
+k=i+1
+//第一相位绿波过去
+t2 = (pos[i])/(speed/3.6)
+//该相位绿灯下限
+lsc1 = parseFloat($("#lsc_l"+k).val())%C;
+ge1 = parseFloat($("#yxld_l"+k).val());
+t2_ = (t2/C).toFixed(0)*C+lsc1
+if (t2>t2_){
+}else{if(lsc_l<(t2_-t2)){
+lsc_l = (t2_-t2)
+}}
+if (t2+ge>t2_+ge1){
+if(lsc_l2<(t2+ge-t2_-ge1)){
+lsc_l2=(t2+ge-t2_-ge1)
+}}
+
+}
+//反向的绿波
+var lsc_l_2 = 0
+var lsc_l2_2 = 0
+ge_v = parseFloat($("#yxld_l"+tcount).val());
+for(var i=0;i<tcount;i++){
+k=tcount-i-1
+k1 = tcount-i
+//最后相位绿波过来
+t2 = (pos[tcount-1]-pos[k])/(speed/3.6)
+//该相位绿灯下限
+lsc1 = parseFloat($("#lsc_l"+k1).val())%C;
+ge1 = parseFloat($("#yxld_l"+k1).val());
+t2_ = (t2/C).toFixed(0)*C+lsc1
+
+if (t2>t2_){
+}else{if(lsc_l_2<(t2_-t2)){
+lsc_l_2 = (t2_-t2)
+}}
+if (t2+ge_v>t2_+ge1){
+if(lsc_l2_2<(t2+ge_v-t2_-ge1)){
+lsc_l2_2=(t2+ge_v-t2_-ge1)
+}}
+console.log(lsc_l_2,lsc_l2_2)
+}
+
+//加绿波
+var lvb_line = []
+t2 = (pos[tcount-1]+100)/(speed/3.6)
+
+//正向的绿波带宽
+lv_width_1 = ge-lsc_l2-lsc_l
+
+if(lv_width_1>0){
+for(var j=-zqgs;j<zqgs;j++){
+lvb_line.push({coords:[[pos[0],j*C+lsc_l],[pos[tcount-1]+100,j*C+lsc_l+t2]]})
+lvb_line.push({coords:[[pos[0],j*C-lsc_l2+ge],[pos[tcount-1]+100,j*C-lsc_l2+t2+ge]]})
+}
+}
+
+
+//反向的绿波带宽
+var lvb_line_2 = []
+lv_width_2 = ge_v-lsc_l_2-lsc_l2_2
+if(lv_width_2>0){
+for(var j=-zqgs;j<zqgs;j++){
+lvb_line_2.push({coords:[[pos[0]-100,j*C+lsc_l_2+t2],[pos[tcount-1],j*C+lsc_l_2]]})
+lvb_line_2.push({coords:[[pos[0]-100,j*C-lsc_l2_2+t2+ge_v],[pos[tcount-1],j*C-lsc_l2_2+ge_v]]})
+}
+}
+var q = document.getElementById("zxlb")
+q.value = Math.max(0,lv_width_1.toFixed(0))
+var q = document.getElementById("fxlb")
+q.value = Math.max(0,lv_width_2.toFixed(0))
 var option = {
     xAxis: {
-	
 	    type:'value',
        min:-100,
       max:dis+100,
@@ -678,7 +761,8 @@ var option = {
       max:C*zqgs
     },
 	legend: {
-        data:['红灯','绿灯','绿波带辅助线']
+        data:['红灯','绿灯','绿波带辅助线','正向绿波带','反向绿波带'],
+		selected: {'绿波带辅助线':false}
     },
     series: [{
 		name:'红灯',
@@ -723,7 +807,36 @@ var option = {
                 }
             },
 			data:lvb_fuzhu
+    },{
+		name:'正向绿波带',
+       type: 'lines',
+            coordinateSystem: 'cartesian2d',
+            zlevel: 2,
+			lineStyle: {
+                normal: {
+                    color: 'rgb(169,209,142)',
+			        width: 1,
+                    curveness: 0,
+					opacity:0.9
+                }
+            },
+			data:lvb_line
+    },{
+		name:'反向绿波带',
+       type: 'lines',
+            coordinateSystem: 'cartesian2d',
+            zlevel: 2,
+			lineStyle: {
+                normal: {
+                    color: 'rgb(169,209,142)',
+			        width: 1,
+                    curveness: 0,
+					opacity:0.9
+                }
+            },
+			data:lvb_line_2
     }
+	
 	
 	]
 };
