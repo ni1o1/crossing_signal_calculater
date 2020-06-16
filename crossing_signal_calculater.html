@@ -652,15 +652,15 @@ var lvb_fuzhu = []
 	   speed = $("#speed_l").val();
 	   t2 = (pos[tcount-1]+100)/(speed/3.6)
 	   for(var j=-1;j<zqgs;j++){
-	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc],[pos[tcount-1]+100,j*C+t2]]})
-	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc+ge],[pos[tcount-1]+100,j*C+t2+ge]]})
+	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc],[pos[tcount-1]+100,j*C+lsc+t2]]})
+	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc+ge],[pos[tcount-1]+100,j*C+lsc+t2+ge]]})
 	   }
 	   lsc1 = parseFloat($("#lsc_l"+tcount).val())%C;
 	   ge1 = parseFloat($("#yxld_l"+tcount).val());
 	   t1 = (pos[tcount-1]+100)/(speed/3.6)
 	   	for(var j=-1;j<zqgs;j++){
-	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+t1],[pos[tcount-1],j*C+lsc1]]})
-	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+t1+ge],[pos[tcount-1],j*C+lsc1+ge]]})
+	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+lsc1+t1],[pos[tcount-1],j*C+lsc1]]})
+	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+lsc1+t1+ge],[pos[tcount-1],j*C+lsc1+ge]]})
 	   }
 console.log(lvb_fuzhu)
 var option = {
