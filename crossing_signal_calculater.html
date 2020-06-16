@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
 	<script src="https://cache.amap.com/lbs/static/jquery-1.9.1.js"></script>
 	<script src="https://cache.amap.com/lbs/static/jquery.range.js"></script>
-	       <script type="text/javascript" src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js"></script>
     <style type="text/css">
        html,body,#container{
            height:100%;
@@ -25,8 +25,11 @@
 <div id="container" style="height: 100%">
 
 <div class="input-card " style='right:5%;width:90%;top:5%;bottom:5%'>
-<h2 style='color:grey'>信号交叉口配时参数计算v1.7_by小旭学长</h2><input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
-	
+<h2 style='color:grey'>信号交叉口配时参数计算器v1.8_by小旭学长</h2>
+ <div class="input-item" style="display:" >
+ <input type="button" class="btn" value="联动配时" id='liandong' onClick="javascript:showliandong()" style='display:;width:8rem;'/>
+<input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
+	 </div>
     <div class="input-item" >
      <div class="input-item-prepend"><span class="input-item-text" >相位数</span></div>
   	 <select name="num" id="num">
@@ -88,7 +91,36 @@
 <p style='color:black'>Utilized Clearance-后补偿时间</p>
 </div>
 </div>
+<div id="container5" style = 'display:none'>
+<div class="input-card " style='right:5%;width:90%;top:5%;bottom:5%'>
+<h2 style='color:grey'>信号交叉口配时参数计算器v1.8_by小旭学长</h2>
+ <div class="input-item" style="display:" >
+ <input type="button" class="btn" value="单点配时" id='jiaocheng' onClick="javascript:showliandong()" style='display:;width:8rem;'/>
+	 </div>
+    <div class="input-item" >
+     <div class="input-item-prepend"><span class="input-item-text" >交叉口数</span></div>
+  	 <select name="tcount" id="tcount">
+	 <option value ="1">请选择</option>
+     <option value ="2">2</option>
+	 <option value ="3">3</option>
+	 <option value ="4">4</option>
+	 <option value ="5">5</option>
+	 <option value ="6">6</option>
+    </select>
+<div class="input-item-prepend"><span class="input-item-text" >车速(km/h)</span></div><input type="text"id = "speed_l" value= '20'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changespeeed(1)" style="display:;width:2rem;"/>
+<input type="button" class="btn" value="-1" id="jiank" onClick="javascript:changespeeed(-1)" style="display:;width:2rem;"/>
+<div class="input-item-prepend"><span class="input-item-text" >周期时长C</span></div><input type="text"id = "zqsc_l" value= '100'><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changeC(1)" style="display:;width:2rem;"/>
+<input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changeC(-1)" style="display:;width:2rem;"/>
+</div>
+		 <div class="input-item" style="display:none" id="Q_liandong">
+</div>
+
+
+</div>
+</div>
+
 <script>
+
 function showfig(){
 var figbtn = document.getElementById("fig")
 var container2 = document.getElementById("container2")
@@ -100,6 +132,7 @@ plotecharts()
 figbtn.value = '显示配时图'
 }
 }
+//显示教程
 function showjiaocheng(){
 var figbtn = document.getElementById("jiaocheng")
 var container4 = document.getElementById("container4")
@@ -123,7 +156,6 @@ costomizedC.style.display='none'
 }
 }
 )
-
 
 $('#num').change( function (){
 num = $("#num").val();
@@ -254,8 +286,6 @@ figbtn.value = '关闭配时图'
  }
 }
 
-
-
 function calculate(){
 $("#res").show()
 $("#res").empty()
@@ -340,8 +370,6 @@ $("#res").append('<div class="input-item" id = "zllb"><h4 style="color:grey">错
 
 }
 
-
-
 function plotecharts(){
 var dom = document.getElementById("container3");
 var myChart = echarts.init(dom);
@@ -374,9 +402,7 @@ r += qh
 
 }
 }else{
-
 for(var i=0;i<num;i++){
-
 rs1.push(r)
 g = parseFloat($('#l'+(i+1)+'g').val());
 gs.push(g)
@@ -385,9 +411,9 @@ hs.push(hds[i])
 r += g+hds[i]
 rs2.push(C-r)
 r += qhs[i]
+}
+}
 
-}
-}
 var option = {
     tooltip : {
         trigger: 'axis',
@@ -498,6 +524,214 @@ if (option && typeof option === "object") {
 }
 
 }
+//显示联动配时标签页
+function showliandong(){
+var container5 = document.getElementById("container5")
+if(container5.style.display=='none'){
+container5.style.display=''
+}else{container5.style.display='none'
+}
+}
+//
+$('#tcount').change( function (){
+tcount = $("#tcount").val();
+console.log(tcount)
+var q = document.getElementById("Q_liandong")
+q.style.display = ""
+$("#Q_liandong").empty()
+$("#Q_liandong").append('<div class="input-item" id = "yxld_l"><h4 style="color:grey">有效绿灯时间ge&nbsp;&nbsp;</h4></div>');
+$("#Q_liandong").append('<div class="input-item" id = "lsc_l"><h4 style="color:grey">绿&nbsp;&nbsp;时&nbsp;&nbsp;差&nbsp;&nbsp;t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
+$("#Q_liandong").append('<div class="input-item" id = "jj_l"><h4 style="color:grey">交叉口间距(m)D&nbsp;&nbsp;</h4></div>');
+ for(var i=0;i<tcount;i++){
+ k = i+1
+$("#yxld_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" value="30" id = "yxld_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changege('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changege('+(-k)+')" style="display:;width:2rem;"/>')
+$("#lsc_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" value="'+0+'" id = "lsc_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:change('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:change('+(-k)+')" style="display:;width:2rem;"/>')
+}
+ for(var i=0;i<tcount-1;i++){
+ k = i+1
+ k1 = k+1
+$("#jj_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'到'+k1+'</span></div><input type="text" value="300" id = "dd_l'+k+'"><input type="button" class="btn" value="+10" id="jiak" onClick="javascript:changeD('+k+')" style="display:;width:3rem;"/><input type="button" class="btn" value="-10" id="jiank" onClick="javascript:changeD('+(-k)+')" style="display:;width:3rem;"/>')
+}
+
+$("#Q_liandong").append('<div id="container6" style="right:6%;height: 500px;width:100%;bottom:6%"></div>')
+plot_liandong()
+})
+
+function change(a){
+	var q = document.getElementById("lsc_l"+(Math.abs(a)))
+	if(a>0){
+	q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())+5)%C}else{
+		if(q.value>0){
+		q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())-5)%C}
+	}
+	plot_liandong()
+}
+
+function changege(a){
+	var q = document.getElementById("yxld_l"+(Math.abs(a)))
+	
+	if(a>0){
+	q.value =  (parseInt($("#yxld_l"+(Math.abs(a))).val())+5)%C}else{
+		if(q.value>0){
+		q.value =  (parseInt($("#yxld_l"+(Math.abs(a))).val())-5)%C}
+	}
+	plot_liandong()
+}
+function changeC(a){
+	var q = document.getElementById("zqsc_l")
+	
+	if(a>0){
+	q.value =  (parseInt($("#zqsc_l").val())+5)}else{
+		if(q.value>0){
+		q.value =  (parseInt($("#zqsc_l").val())-5)}
+	}
+	plot_liandong()
+}
+function changeD(a){
+	var q = document.getElementById("dd_l"+(Math.abs(a)))
+	if(a>0){
+	q.value =  (parseInt($("#dd_l"+(Math.abs(a))).val())+10)}else{
+		if(q.value>0){
+		q.value =  (parseInt($("#dd_l"+(Math.abs(a))).val())-10)}
+	}
+	plot_liandong()
+}
+
+function changespeeed(a){
+	var q = document.getElementById("speed_l")
+	if(a>0){
+	q.value =  (parseInt($("#speed_l").val())+1)}else{
+		if(q.value>0){
+		q.value =  (parseInt($("#speed_l").val())-1)}
+	}
+	plot_liandong()
+}
+
+
+//绘制联动配时图
+function plot_liandong(){
+var dom = document.getElementById("container6");
+var myChart = echarts.init(dom);
+//交叉口数
+tcount = $("#tcount").val();
+
+//得到交叉口位置
+var dis = 0
+var pos = [dis]
+ for(var i=0;i<tcount-1;i++){
+	 k = i+1
+	 dis += parseFloat($("#dd_l"+k).val())
+	 pos.push(dis)
+ }
+ //得到周期时长
+C = $("#zqsc_l").val();
+//保存绿灯信息
+lv = []
+//保存红灯信息
+hong = []
+  //计算各交叉口的配时
+   for(var i=1;i<=tcount+1;i++){
+	   //周期个数
+	   var zqgs = 4
+	   //有效绿灯时间
+	   ge = parseFloat($("#yxld_l"+i).val());
+	   //绿时差
+	   lsc = parseFloat($("#lsc_l"+i).val())%C;
+
+	    for(var j=-1;j<zqgs;j++){
+			hong.push({coords:[[pos[i-1],j*C+lsc+ge],[pos[i-1],(j+1)*C+lsc]]})
+			lv.push({coords:[[pos[i-1],j*C+lsc],[pos[i-1],j*C+lsc+ge]]})
+		}
+   }
+
+//计算绿波带宽 
+var lvb_fuzhu = []
+	   ge = parseFloat($("#yxld_l1").val());
+	   //绿时差
+	   lsc = parseFloat($("#lsc_l1").val())%C;
+	   speed = $("#speed_l").val();
+	   t2 = (pos[tcount-1]+100)/(speed/3.6)
+	   for(var j=-1;j<zqgs;j++){
+	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc],[pos[tcount-1]+100,j*C+t2]]})
+	   lvb_fuzhu.push({coords:[[pos[0],j*C+lsc+ge],[pos[tcount-1]+100,j*C+t2+ge]]})
+	   }
+	   lsc1 = parseFloat($("#lsc_l"+tcount).val())%C;
+	   ge1 = parseFloat($("#yxld_l"+tcount).val());
+	   t1 = (pos[tcount-1]+100)/(speed/3.6)
+	   	for(var j=-1;j<zqgs;j++){
+	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+t1],[pos[tcount-1],j*C+lsc1]]})
+	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+t1+ge],[pos[tcount-1],j*C+lsc1+ge]]})
+	   }
+console.log(lvb_fuzhu)
+var option = {
+    xAxis: {
+	
+	    type:'value',
+       min:-100,
+      max:dis+100,
+
+    },
+    yAxis: {
+		splitLine:false,
+		type:'value',
+ min:0,
+      max:C*zqgs
+    },
+	legend: {
+        data:['红灯','绿灯','绿波带辅助线']
+    },
+    series: [{
+		name:'红灯',
+       type: 'lines',
+            coordinateSystem: 'cartesian2d',
+            zlevel: 2,
+			lineStyle: {
+                normal: {
+                    color: 'rgb(213,34,35,1)',
+                    width: 8,
+                    curveness: 0,
+					opacity:1
+                }
+            },
+			data:hong
+    },{
+		name:'绿灯',
+       type: 'lines',
+            coordinateSystem: 'cartesian2d',
+            zlevel: 2,
+			lineStyle: {
+                normal: {
+                    color: 'rgb(169,209,142)',
+                    width: 8,
+                    curveness: 0,
+					opacity:1
+                }
+            },
+			data:lv
+    },{
+		name:'绿波带辅助线',
+       type: 'lines',
+            coordinateSystem: 'cartesian2d',
+            zlevel: 2,
+			lineStyle: {
+                normal: {
+                    color: 'rgb(155,155,155)',
+					type:'dashed',
+                    width: 1,
+                    curveness: 0,
+					opacity:0.9
+                }
+            },
+			data:lvb_fuzhu
+    }
+	
+	]
+};
+
+
+    myChart.setOption(option)
+}
+
 </script>
 </body>
 
