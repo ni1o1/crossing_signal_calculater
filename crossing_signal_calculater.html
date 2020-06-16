@@ -107,9 +107,9 @@
 	 <option value ="5">5</option>
 	 <option value ="6">6</option>
     </select>
-<div class="input-item-prepend"><span class="input-item-text" >车速(km/h)</span></div><input type="text"id = "speed_l" value= '10'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changespeeed(1)" style="display:;width:2rem;"/>
+<div class="input-item-prepend"><span class="input-item-text" >车速(km/h)</span></div><input type="text"id = "speed_l" onChange="javascript:plot_liandong()"  value= '10'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changespeeed(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-1" id="jiank" onClick="javascript:changespeeed(-1)" style="display:;width:2rem;"/>
-<div class="input-item-prepend"><span class="input-item-text" >周期时长C</span></div><input type="text"id = "zqsc_l" value= '100'><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changeC(1)" style="display:;width:2rem;"/>
+<div class="input-item-prepend"><span class="input-item-text" >周期时长C</span></div><input type="text"id = "zqsc_l" onChange="javascript:plot_liandong()" value= '100'><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changeC(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changeC(-1)" style="display:;width:2rem;"/>
 </div>
 		 <div class="input-item" style="display:none" id="Q_liandong">
@@ -543,13 +543,13 @@ $("#Q_liandong").append('<div class="input-item" id = "lsc_l"><h4 style="color:g
 $("#Q_liandong").append('<div class="input-item" id = "jj_l"><h4 style="color:grey">交叉口间距(m)&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
  for(var i=0;i<tcount;i++){
  k = i+1
-$("#yxld_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" value="30" id = "yxld_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changege('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changege('+(-k)+')" style="display:;width:2rem;"/>')
-$("#lsc_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" value="'+0+'" id = "lsc_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:change('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:change('+(-k)+')" style="display:;width:2rem;"/>')
+$("#yxld_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" onChange="javascript:plot_liandong()" value="30" id = "yxld_l'+k+'"><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changege('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changege('+(-k)+')" style="display:;width:2rem;"/>')
+$("#lsc_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'</span></div><input type="text" onChange="javascript:plot_liandong()" value="'+0+'" id = "lsc_l'+k+'"><input type="button" class="btn" value="+5" id="jiak"  onClick="javascript:change('+k+')" style="display:;width:2rem;"/><input type="button" class="btn" value="-5" id="jiank" onClick="javascript:change('+(-k)+')" style="display:;width:2rem;"/>')
 }
  for(var i=0;i<tcount-1;i++){
  k = i+1
  k1 = k+1
-$("#jj_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'到'+k1+'</span></div><input type="text" value="300" id = "dd_l'+k+'"><input type="button" class="btn" value="+10" id="jiak" onClick="javascript:changeD('+k+')" style="display:;width:3rem;"/><input type="button" class="btn" value="-10" id="jiank" onClick="javascript:changeD('+(-k)+')" style="display:;width:3rem;"/>')
+$("#jj_l").append('<div class="input-item-prepend"><span class="input-item-text">交叉口'+k+'到'+k1+'</span></div><input type="text" onChange="javascript:plot_liandong()"  value="300" id = "dd_l'+k+'"><input type="button" class="btn" value="+10" id="jiak" onClick="javascript:changeD('+k+')" style="display:;width:3rem;"/><input type="button" class="btn" value="-10" id="jiank" onClick="javascript:changeD('+(-k)+')" style="display:;width:3rem;"/>')
 }
 $("#Q_liandong").append('<div class="input-item" id = "lvbk_l"><h4 style="color:grey">绿波带宽 (s)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
 $("#lvbk_l").append('<div class="input-item-prepend"><span class="input-item-text">正向带宽</span></div><input type="text" value="30" id = "zxlb">')
