@@ -569,6 +569,9 @@ C = $("#zqsc_l").val();
 		q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())-5+parseInt(C))
 		}
 	}
+	if(q.value<0){
+	q.value = parseInt($("#lsc_l"+(Math.abs(a))).val())+parseInt(C)
+	}
 	plot_liandong()
 }
 
@@ -669,7 +672,9 @@ var lvb_fuzhu = []
 	   }
 
 function isgreen(t,lsc,ge,C){
-return (t-lsc)%C<=ge
+var xx = (t-lsc)%C
+if (xx<0){xx+=parseInt(C)}
+return xx<=ge
 }
 
 //计算绿波带宽
