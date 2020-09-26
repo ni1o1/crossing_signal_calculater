@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
 	<script src="https://cache.amap.com/lbs/static/jquery-1.9.1.js"></script>
 	<script src="https://cache.amap.com/lbs/static/jquery.range.js"></script>
-	<script type="text/javascript" src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="https://echarts.apache.org/examples/vendors/echarts/echarts.min.js"></script>
     <style type="text/css">
        html,body,#container{
            height:100%;
@@ -25,7 +25,7 @@
 <div id="container" style="height: 100%">
 
 <div class="input-card " style='right:5%;width:90%;top:5%;bottom:5%'>
-<h2 style='color:grey'>信号交叉口配时参数计算器v1.8_by小旭学长</h2>
+<h2 style='color:grey'>信号交叉口配时参数计算器v1.9_by小旭学长</h2>
  <div class="input-item" style="display:" >
  <input type="button" class="btn" value="联动配时" id='liandong' onClick="javascript:showliandong()" style='display:;width:8rem;'/>
 <input type="button" class="btn" value="信号配时教程" id='jiaocheng' onClick="javascript:showjiaocheng()" style='display:;width:8rem;'/>
@@ -554,13 +554,11 @@ $("#jj_l").append('<div class="input-item-prepend"><span class="input-item-text"
 $("#Q_liandong").append('<div class="input-item" id = "lvbk_l"><h4 style="color:grey">绿波带宽 (s)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
 $("#lvbk_l").append('<div class="input-item-prepend"><span class="input-item-text">正向带宽</span></div><input type="text" value="30" id = "zxlb">')
 $("#lvbk_l").append('<div class="input-item-prepend"><span class="input-item-text">反向带宽</span></div><input type="text" value="30" id = "fxlb">')
-$("#Q_liandong").append('<div id="container6" style="right:6%;height: 500px;width:100%;bottom:6%"></div>')
+$("#Q_liandong").append('<div id="container6" style="right:6%;height:500px;width:100%"></div>')
 plot_liandong()
 })
-
 function change(a){
 C = $("#zqsc_l").val();
-
 	var q = document.getElementById("lsc_l"+(Math.abs(a)))
 	if(a>0){if(q.value<C/2){
 	q.value =  (parseInt($("#lsc_l"+(Math.abs(a))).val())+5)%C
@@ -670,91 +668,90 @@ var lvb_fuzhu = []
 	   lvb_fuzhu.push({coords:[[pos[0]-100,j*C+lsc1+t1+ge1],[pos[tcount-1],j*C+lsc1+ge1]]})
 	   }
 
+function isgreen(t,lsc,ge,C){
+return (t-lsc)%C<=ge
+}
 
 //计算绿波带宽
 //绿波的绿时差
 var lsc_l = 0
 var lsc_l2 = 0
 ge = parseFloat($("#yxld_l"+1).val());
+//tcount交叉口数量
+var lvb_second = []
+var lvb_line = []
+for(var second=0;second<C;second++){
+
+lvb_ok = true
 for(var i=0;i<tcount;i++){
 k=i+1
 //第一相位绿波过去
-t2 = (pos[i])/(speed/3.6)
+t2 = (pos[i])/(speed/3.6)+second
 //该相位绿灯下限
 lsc1 = parseFloat($("#lsc_l"+k).val())%C;
 ge1 = parseFloat($("#yxld_l"+k).val());
-t2_ = (t2/C).toFixed(0)*C+lsc1
-if (t2>t2_){
-}else{if(lsc_l<(t2_-t2)){
-lsc_l = (t2_-t2)
-}}
-if (t2+ge>t2_+ge1){
-if(lsc_l2<(t2+ge-t2_-ge1)){
-lsc_l2=(t2+ge-t2_-ge1)
-}}
-
+if (isgreen(t2,lsc1,ge1,C)==false){
+lvb_ok = false
 }
+}
+if(lvb_ok == true){
+lvb_second.push(second)
+for (var j=-zqgs;j<zqgs;j++){
+lvb_line.push({coords:[[pos[0],second+C*j],[pos[tcount-1]+100,t2+C*j+100/(speed/3.6)]]})
+}
+}}
+//加绿波
+//正向的绿波带宽
+lv_width_1 = lvb_second.length
+
+
 //反向的绿波
 var lsc_l_2 = 0
 var lsc_l2_2 = 0
 ge_v = parseFloat($("#yxld_l"+tcount).val());
+//tcount交叉口数量
+var lvb_second_2 = []
+var lvb_line_2 = []
+for(var second=0;second<C;second++){
+lvb_ok = true
 for(var i=0;i<tcount;i++){
-k=tcount-i-1
+k = tcount-i-1
 k1 = tcount-i
 //最后相位绿波过来
-t2 = (pos[tcount-1]-pos[k])/(speed/3.6)
+t2 = (pos[tcount-1]-pos[k])/(speed/3.6)+second
 //该相位绿灯下限
 lsc1 = parseFloat($("#lsc_l"+k1).val())%C;
 ge1 = parseFloat($("#yxld_l"+k1).val());
-t2_ = (t2/C).toFixed(0)*C+lsc1
-
-if (t2>t2_){
-}else{if(lsc_l_2<(t2_-t2)){
-lsc_l_2 = (t2_-t2)
-}}
-if (t2+ge_v>t2_+ge1){
-if(lsc_l2_2<(t2+ge_v-t2_-ge1)){
-lsc_l2_2=(t2+ge_v-t2_-ge1)
-}}
-console.log(lsc_l_2,lsc_l2_2)
-}
-
-//加绿波
-var lvb_line = []
-t2 = (pos[tcount-1]+100)/(speed/3.6)
-
-//正向的绿波带宽
-lv_width_1 = ge-lsc_l2-lsc_l
-
-if(lv_width_1>0){
-for(var j=-zqgs;j<zqgs;j++){
-lvb_line.push({coords:[[pos[0],j*C+lsc_l],[pos[tcount-1]+100,j*C+lsc_l+t2]]})
-lvb_line.push({coords:[[pos[0],j*C-lsc_l2+ge],[pos[tcount-1]+100,j*C-lsc_l2+t2+ge]]})
+if (isgreen(t2,lsc1,ge1,C)==false){
+lvb_ok = false
 }
 }
-
-
-//反向的绿波带宽
-var lvb_line_2 = []
-lv_width_2 = ge_v-lsc_l_2-lsc_l2_2
-if(lv_width_2>0){
-for(var j=-zqgs;j<zqgs;j++){
-lvb_line_2.push({coords:[[pos[0]-100,j*C+lsc_l_2+t2],[pos[tcount-1],j*C+lsc_l_2]]})
-lvb_line_2.push({coords:[[pos[0]-100,j*C-lsc_l2_2+t2+ge_v],[pos[tcount-1],j*C-lsc_l2_2+ge_v]]})
+if(lvb_ok == true){
+lvb_second_2.push(second)
+for (var j=-zqgs;j<zqgs;j++){
+lvb_line_2.push({coords:[[pos[0]-100,t2+C*j+100/(speed/3.6)],[pos[tcount-1],second+C*j]]})
 }
 }
+}
+lv_width_2 = lvb_second_2.length
+
+
+
+
 var q = document.getElementById("zxlb")
 q.value = Math.max(0,lv_width_1.toFixed(0))
 var q = document.getElementById("fxlb")
 q.value = Math.max(0,lv_width_2.toFixed(0))
 var option = {
     xAxis: {
+	name:'距离',
 	    type:'value',
-       min:-100,
+       min:-50,
       max:dis+100,
 
     },
     yAxis: {
+	name:'时间',
 		splitLine:false,
 		type:'value',
  min:0,
