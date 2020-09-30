@@ -659,7 +659,7 @@ hong = []
 	   //绿时差
 	   lsc = parseFloat($("#lsc_l"+i).val())%C;
 
-	    for(var j=0;j<zqgs;j++){
+	    for(var j=-1;j<zqgs+1;j++){
 			hong.push({coords:[[pos[i-1],j*C+lsc+ge],[pos[i-1],(j+1)*C+lsc]]})
 			lv.push({coords:[[pos[i-1],j*C+lsc],[pos[i-1],j*C+lsc+ge]]})
 		}
