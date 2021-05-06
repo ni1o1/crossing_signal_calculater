@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
 	<script src="https://cache.amap.com/lbs/static/jquery-1.9.1.js"></script>
 	<script src="https://cache.amap.com/lbs/static/jquery.range.js"></script>
-	<script type="text/javascript" src="https://echarts.apache.org/examples/vendors/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="echarts.js"></script>
     <style type="text/css">
        html,body,#container{
            height:100%;
@@ -47,7 +47,7 @@
  <div class="input-item-prepend"><span class="input-item-text" >黄灯时间(s)</span></div><input type="text" id = "hd" value= '3'>
  <div class="input-item-prepend"><span class="input-item-text" >全红时间(s)</span></div><input type="text"id = "qh" value= '1'>
     </div>
-	
+​	
 
  <div class="input-item" style="display:" id="para">
 	<input type="button" class="btn" value="计算" id='js' onClick="javascript:calculate()" style='display:none;width:8rem;'/>
@@ -111,7 +111,7 @@
 <input type="button" class="btn" value="-1" id="jiank" onClick="javascript:changespeeed(-1)" style="display:;width:2rem;"/>
 <div class="input-item-prepend"><span class="input-item-text" >周期时长C</span></div><input type="text"id = "zqsc_l" onChange="javascript:plot_liandong()" value= '100'><input type="button" class="btn" value="+5" id="jiak" onClick="javascript:changeC(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-5" id="jiank" onClick="javascript:changeC(-1)" style="display:;width:2rem;"/>
-<div class="input-item-prepend"><span class="input-item-text" >显示周期个数</span></div><input type="text"id = "zqgs" onChange="javascript:plot_liandong()" value= '4'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changezqgs(1)" style="display:;width:2rem;"/>
+<div class="input-item-prepend"><span class="input-item-text" >显示周期数</span></div><input type="text"id = "zqgs" onChange="javascript:plot_liandong()" value= '4'><input type="button" class="btn" value="+1" id="jiak" onClick="javascript:changezqgs(1)" style="display:;width:2rem;"/>
 <input type="button" class="btn" value="-1" id="jiank" onClick="javascript:changezqgs(-1)" style="display:;width:2rem;"/>
 
 </div>
@@ -260,7 +260,7 @@ $("#xsld").append('<div class="input-item-prepend"><span class="input-item-text"
  ges.push(ge)
 }
 
- 
+
 $("#res").append('<div class="input-item" id = "params_1"><h4 style="color:grey">周&nbsp;&nbsp;期&nbsp;&nbsp;参&nbsp;&nbsp;数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4></div>');
 $("#params_1").append('<div class="input-item-prepend"><span class="input-item-text">总损失L</span></div><input type="text" value="'+L+'" id = "zss">')
 
@@ -277,9 +277,9 @@ for(var i=0;i<num;i++){
  lxb = ges[i]/C
 $("#lxb").append('<div class="input-item-prepend"><span class="input-item-text">相位'+k+'</span></div><input type="text" value="'+lxb.toFixed(3)+'" id = "l'+k+'ge">')
 }
+
  
- 
- 
+
  $("#res").append('<input type="button" class="btn" value="显示配时图" id="fig" onClick="javascript:showfig()" style="width:8rem;"/>')
 if(container2.style.display=='none'){}
 else{plotecharts()
@@ -519,7 +519,7 @@ return hdd} }
 var data ={}
 
     myChart.setOption(option
-	
+
 )
 if (option && typeof option === "object") {
     myChart.setOption(option, true);
@@ -769,9 +769,9 @@ var option = {
 
     },
     yAxis: {
-	name:'时间',
-		splitLine:false,
-		type:'value',
+    name:'时间',
+    	splitLine:false,
+    	type:'value',
  min:0,
       max:C*zqgs
     },
@@ -830,7 +830,7 @@ var option = {
 			lineStyle: {
                 normal: {
                     color: 'rgb(169,209,142)',
-			        width: 1,
+			        width: 2,
                     curveness: 0,
 					opacity:0.4
                 }
@@ -844,7 +844,7 @@ var option = {
 			lineStyle: {
                 normal: {
                     color: 'rgb(169,209,142)',
-			        width: 1,
+			        width: 2,
                     curveness: 0,
 					opacity:0.4
                 }
